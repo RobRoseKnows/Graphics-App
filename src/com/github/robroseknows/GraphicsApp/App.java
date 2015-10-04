@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
@@ -77,12 +78,13 @@ public class App extends Canvas{
 	 */
 	public void paint(Graphics g)
 	{
+		super.paint(g);
 		if(imageProcessed != null)
 			g.drawImage(imageProcessed, 0, 0, null);
 		else
 			g.drawImage(image, 0, 0, null);
+		frame.setSize(image.getWidth(), image.getHeight());
 	}
-	
 	
 	
 	/**
@@ -140,10 +142,11 @@ public class App extends Canvas{
 	    if (ret == JFileChooser.APPROVE_OPTION) {
 	    	File file = fileopen.getSelectedFile();
 	      	try {
-	    	  return ImageIO.read(file);
+	      		System.out.println("Properly read " + file.getName());
+	      		return ImageIO.read(file);
 	      	} catch (IOException e) {
-	    	  // TODO Auto-generated catch block
-	    	  e.printStackTrace();
+	      		// TODO Auto-generated catch block
+	      		e.printStackTrace();
 	      	}
 	    }
 	    
@@ -165,13 +168,35 @@ public class App extends Canvas{
 	    fileopen.setApproveButtonText("Save image");
 
 	    int ret = fileopen.showSaveDialog(null);
-
+ 
 	    if (ret == JFileChooser.APPROVE_OPTION) {
 	    	File file = fileopen.getSelectedFile();
 	    	return file;
 	    }
 	    
 	    return null;
+	}
+	
+	public void exportImage(File file) {
+		BufferedImage toSave;
+		if(imageProcessed != null)
+			toSave = imageProcessed;
+		else
+			toSave = image;
+		
+		BufferedImage bImg = new BufferedImage(toSave.getWidth(), toSave.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D cg = bImg.createGraphics();
+		paint(cg);
+		cg.dispose();
+		try {
+		    FileOutputStream out = new FileOutputStream(file);
+		    ImageIO.write(bImg, "png", out);
+		    out.close();
+		} catch (FileNotFoundException e) {
+		    e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -190,19 +215,7 @@ public class App extends Canvas{
 				case "save":
 					File file = saveFileDialog();
 					if(file != null) {
-						try {
-							FileOutputStream out = new FileOutputStream(file);
-							// Check to make sure that the image has been processed
-							if(imageProcessed != null)
-								ImageIO.write(imageProcessed, "png", file);
-							else
-								ImageIO.write(image, "png", file);
-							out.close();
-						} catch (FileNotFoundException e2) {
-							e2.printStackTrace();
-						} catch (IOException e2) {
-							e2.printStackTrace();
-						}
+					    exportImage(file);
 					}
 					break;
 				
@@ -213,6 +226,7 @@ public class App extends Canvas{
 						image = inputImg;
 					break;
 			}
+			repaint();
 		}
 	}
 }
