@@ -1,6 +1,7 @@
 package com.github.robroseknows.GraphicsApp;
 
 import java.awt.Canvas;
+import java.awt.CheckboxMenuItem;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Frame;
@@ -12,6 +13,8 @@ import java.awt.MenuItem;
 import java.awt.MenuShortcut;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
@@ -31,6 +34,7 @@ public class App extends Canvas{
 	private BufferedImage image;
 	private BufferedImage imageProcessed;
 	private Canvas currentFilter;
+	private boolean cumulativeManip;
 	
 	public App() {
 		frame = new Frame();
@@ -108,17 +112,34 @@ public class App extends Canvas{
 		Menu menu = new Menu("File");
 		MenuItemListener menuItemListener = new MenuItemListener();
 		
-		// Creates file->open option. Allows you to open a file using the menu or by pressing Shift+O
-		MenuItem fileOpenItem = new MenuItem("Open", new MenuShortcut(79, true));
+		// Creates file->open option. Allows you to open a file using the menu or by pressing Ctrl+O
+		MenuItem fileOpenItem = new MenuItem("Open", new MenuShortcut(79));
 		fileOpenItem.setActionCommand("open");
 		fileOpenItem.addActionListener(menuItemListener);
 		menu.add(fileOpenItem);
 		
-		// Creates file->save option. Allows you to save a file using the menu or by pressing Shift+S
-		MenuItem fileSaveItem = new MenuItem("Save", new MenuShortcut(83, true));
+		// Creates file->save option. Allows you to save a file using the menu or by pressing Ctrl+S
+		MenuItem fileSaveItem = new MenuItem("Save", new MenuShortcut(83));
 		fileSaveItem.setActionCommand("save");
 		fileSaveItem.addActionListener(menuItemListener);
 		menu.add(fileSaveItem);
+		
+		MenuItem clearCanvasItem = new MenuItem("Clear Canvas");
+		clearCanvasItem.setActionCommand("clear");
+		clearCanvasItem.addActionListener(menuItemListener);
+		menu.add(clearCanvasItem);
+		
+		CheckboxMenuItem cumulativeCheckbox = new CheckboxMenuItem("Cumulative Bluring");
+		cumulativeCheckbox.addItemListener(new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				if(arg0.getStateChange() == ItemEvent.SELECTED)
+					cumulativeManip = true;
+				else
+					cumulativeManip = false;
+			}
+		});
+		menu.add(cumulativeCheckbox);
 		
 		return menu;
 	}
