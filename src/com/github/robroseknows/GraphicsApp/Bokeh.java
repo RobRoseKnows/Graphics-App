@@ -50,6 +50,7 @@ public class Bokeh extends Canvas{
 	
 	public void drawArea(Graphics g, ArrayList<Integer> xs, ArrayList<Integer> ys)
 	{
-
+		if(xs.size())
+		for(int i = 0; i)
 	} //end public void drawArea(Graphics g, ArrayList<Integer> xs, ArrayList<Integer> ys)
 }
