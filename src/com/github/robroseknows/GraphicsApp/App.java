@@ -4,6 +4,10 @@ import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.Menu;
 import java.awt.MenuBar;
+import java.awt.MenuItem;
+import java.awt.MenuShortcut;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -15,9 +19,12 @@ public class App {
 	private static Frame frame;
 	private static BufferedImage image;
 	
-	public static void main(String[] args) {
+	public App() {
 		frame = new Frame();
 		frame.setMenuBar(createMenuBar());
+	}
+	
+	public static void main(String[] args) {
 		try {
 			 image = ImageIO.read(new File("default.jpg"));
 		} catch (IOException e) {
@@ -26,16 +33,38 @@ public class App {
 		}
 	}
 	
-	public static MenuBar createMenuBar() {
+	public MenuBar createMenuBar() {
 		MenuBar bar = new MenuBar();
 		bar.add(createFileMenu());
 		return bar;
 	}
 
-	public static Menu createFileMenu() {
+	public Menu createFileMenu() {
 		Menu menu = new Menu("File");
+		MenuItemListener menuItemListener = new MenuItemListener();
+		
+		// Creates file->open option. Allows you to open a file using the menu or by pressing Shift+O
+		MenuItem fileOpenItem = new MenuItem("Open", new MenuShortcut(79, true));
+		fileOpenItem.setActionCommand("open");
+		fileOpenItem.addActionListener(menuItemListener);
+		menu.add(fileOpenItem);
+		
+		// Creates file->save option. Allows you to save a file using the menu or by pressing Shift+S
+		MenuItem fileSaveItem = new MenuItem("Save", new MenuShortcut(83, true));
+		fileSaveItem.setActionCommand("save");
+		fileSaveItem.addActionListener(menuItemListener);
+		menu.add(fileSaveItem);
 		
 		return menu;
+	}
+	
+	class MenuItemListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	
 	/**
