@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
@@ -35,6 +37,7 @@ public class App extends Canvas{
 	private BufferedImage imageProcessed;
 	private Canvas currentFilter;
 	private boolean cumulativeManip;
+	private MotionBlur mb = new MotionBlur();
 	
 	public App() {
 		frame = new Frame();
@@ -47,6 +50,27 @@ public class App extends Canvas{
 		}
 		currentFilter = new Canvas();
 		currentFilter.setSize(image.getWidth(), image.getHeight());
+		
+		addMouseListener(new MouseAdapter(){
+			int centX;
+			int centY;
+			boolean completed = true;
+			public void mousePressed(MouseEvent e)
+			{
+				centX = e.getX();
+				centY = e.getY();
+			}
+				
+			public void mouseReleased(MouseEvent e)
+			{
+				if(completed) {
+					completed = false;
+					imageProcessed = mb.blur(image, centX, centY);
+					repaint();
+				}
+				completed = true;
+			}
+		});
 	}
 	
 	
@@ -91,6 +115,7 @@ public class App extends Canvas{
 	}
 	
 	
+	
 	/**
 	 * Function generates the MenuBar that allows users to load and save
 	 * images as well as select their desired process.
@@ -124,8 +149,8 @@ public class App extends Canvas{
 		fileSaveItem.addActionListener(menuItemListener);
 		menu.add(fileSaveItem);
 		
-		MenuItem clearCanvasItem = new MenuItem("Clear Canvas");
-		clearCanvasItem.setActionCommand("clear");
+		MenuItem clearCanvasItem = new MenuItem("Reset Canvas");
+		clearCanvasItem.setActionCommand("reset");
 		clearCanvasItem.addActionListener(menuItemListener);
 		menu.add(clearCanvasItem);
 		
@@ -198,6 +223,13 @@ public class App extends Canvas{
 	    return null;
 	}
 	
+	
+	
+	/**
+	 * This method saves the canvas as a file in a position designated using the
+	 * {@link saveFileDialog} method.
+	 * @param file The file save location.
+	 */
 	public void exportImage(File file) {
 		BufferedImage toSave;
 		if(imageProcessed != null)
@@ -245,6 +277,11 @@ public class App extends Canvas{
 					BufferedImage inputImg = openFileDialog();
 					if(inputImg != null)
 						image = inputImg;
+					break;
+					
+				// Reset all the changes made to the image by setting back to null
+				case "reset":
+					imageProcessed = null;
 					break;
 			}
 			repaint();

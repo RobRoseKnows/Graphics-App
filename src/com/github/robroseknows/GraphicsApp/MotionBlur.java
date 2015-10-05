@@ -15,17 +15,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class MotionBlur extends Canvas
-{
-	//The background picture.
-	private BufferedImage myPic;
-	
-	//A copy of myPic with a motion blur applied.
-	private BufferedImage myPicBlurred; 
-	
-	
-	
-	
+public class MotionBlur
+{		
 	//This is the area around the center of the image that will not be blurred.
 	private static int BUFFER_ROOM = 25; 
 	
@@ -36,69 +27,12 @@ public class MotionBlur extends Canvas
 	private static int SAT_INTR = 75; 
 	
 	
-	
-	
-	//The x coordinate of the center of the blur.
-	private int centX = -1; 
-	
-	//The y coordinate of the center of the blur.
-	private int centY = -1; 
-	
-	/************************************************************
-	 * The constructor for motion blur loads the image that to	*
-	 * blur into the program. It then performs the saturation	*
-	 * boost on the image and sets the boosted image to myPic.	*
-	 * It adds the MouseListener and MouseMotionListener also.	*
-	 ************************************************************/
-	public MotionBlur(BufferedImage toProcess)
+	public MotionBlur()
 	{
 		super();
-		myPic = toProcess;
-		
-		myPic = saturationFilter(myPic);
-		
-		addMouseListener(new MouseAdapter(){
-				public void mousePressed(MouseEvent e)
-				{
-					centX = e.getX();
-					centY = e.getY();
-					System.out.println("(" + centX + ", " + centY + ")");
-				}
-					
-				public void mouseReleased(MouseEvent e)
-				{
-					myPicBlurred = blurHur(myPic);
-					repaint();
-				}
-			});
 	}
 	
-	/************************************************************
-	 * This method fires when stuff is updated. It's overridden	*
-	 * in order to prevent the image from flickering.			*
-	 * @param g The graphics object for the Canvas.				*
-	 ************************************************************/
-	public void update(Graphics g)
-	{
-		paint(g);
-	}
-	
-	/************************************************************
-	 * This draws what is necessary onto the canvas. Draws the	*
-	 * selection line when the user is still choosing the		*
-	 * intensity of the blur.									*
-	 * @param g The graphics object for the Canvas.				*
-	 ************************************************************/
-	public void paint(Graphics g)
-	{	
-		//If the picture has been blurred, draw the blurred one instead.
-		if(myPicBlurred != null)
-			g.drawImage(myPicBlurred, 0, 0, null);
-		else
-			g.drawImage(myPic, 0, 0, null);
-	}
-	
-	public BufferedImage blurHur(BufferedImage in)
+	public BufferedImage blur(BufferedImage in, int centX, int centY)
 	{
 		BufferedImage out = new BufferedImage(in.getWidth(), in.getHeight(), in.getType());
 		for(int x = 0; x < out.getWidth(); x++)
