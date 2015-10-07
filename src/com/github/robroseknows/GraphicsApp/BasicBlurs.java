@@ -54,7 +54,8 @@ public class BasicBlurs {
         
         verticalBlur = rotateImg(verticalBlur, -90);
 		
-		return combineImages(horizontalBlur, verticalBlur);
+        return rotatedImg;
+		//return combineImages(horizontalBlur, verticalBlur);
 	}
 	
 	public BufferedImage combineImages(BufferedImage... imgs) {
@@ -95,9 +96,17 @@ public class BasicBlurs {
 		double angleInRadians = Math.toRadians(angle);
 		BufferedImage result = new BufferedImage(src.getHeight(), src.getWidth(), src.getType());
 		
+	    int srcWidth = src.getWidth();
+	    int srcHeight = src.getHeight();
+		
+	    double sin = Math.abs(Math.sin(angleInRadians));
+	    double cos = Math.abs(Math.cos(angleInRadians));
+	    int newWidth = (int) Math.floor(srcWidth * cos + srcHeight * sin);
+	    int newHeight = (int) Math.floor(srcHeight * cos + srcWidth * sin);
+		
 	    Graphics2D g = result.createGraphics();
-	    g.translate((src.getHeight() - src.getWidth()) / 2, (src.getWidth() - src.getHeight()) / 2);
-	    g.rotate(angleInRadians, src.getWidth() / 2, src.getHeight() / 2);
+	    g.translate((newWidth - srcWidth) / 2, (newHeight - srcHeight) / 2);
+	    g.rotate(angleInRadians, srcWidth / 2, srcHeight / 2);
 	    g.drawRenderedImage(src, null);
 	    
 		return result;
@@ -168,7 +177,7 @@ public class BasicBlurs {
 						runningBlueSum -= img.getRGB(col - sizeLeft, row) & 0x000000FF;
 						
 						
-						Color newPixel = new Color(runningRedSum / (sizeLeft + sizeRight), runningGreenSum / (sizeLeft + sizeRight), runningBlueSum / (sizeLeft + sizeRight));
+						Color newPixel = new Color(runningRedSum / (sizeLeft + sizeRight + 1), runningGreenSum / (sizeLeft + sizeRight + 1), runningBlueSum / (sizeLeft + sizeRight + 1));
 						blurred.setRGB(col, row, newPixel.getRGB());
 					}
 				}
