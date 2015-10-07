@@ -38,6 +38,7 @@ public class App extends Canvas{
 	private Canvas currentFilter;
 	private boolean cumulativeManip;
 	private MotionBlur mb = new MotionBlur();
+	private BasicBlurs bb = new BasicBlurs();
 	
 	public App() {
 		frame = new Frame();
@@ -65,7 +66,7 @@ public class App extends Canvas{
 			{
 				if(completed) {
 					completed = false;
-					imageProcessed = mb.blur(image, centX, centY);
+					imageProcessed = bb.boxBlur(image, 5);
 					repaint();
 				}
 				completed = true;
