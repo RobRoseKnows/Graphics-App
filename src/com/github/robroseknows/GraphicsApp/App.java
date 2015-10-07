@@ -44,7 +44,7 @@ public class App extends Canvas{
 		frame = new Frame();
 		frame.setMenuBar(createMenuBar());
 		try {
-			 image = ImageIO.read(new File("default.jpg"));
+			 image = ImageIO.read(new File("default.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
