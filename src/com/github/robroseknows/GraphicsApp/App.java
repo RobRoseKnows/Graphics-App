@@ -65,8 +65,8 @@ public class App extends Canvas{
 			public void mouseReleased(MouseEvent e)
 			{
 				if(completed) {
-					completed = false;
-					imageProcessed = bb.boxBlur(image, 5);
+					BoxBlurFilter op = new BoxBlurFilter();
+					imageProcessed = op.filter(image, imageProcessed);
 					repaint();
 				}
 				completed = true;
