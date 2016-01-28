@@ -66,6 +66,7 @@ public class App extends Canvas{
 			{
 				if(completed) {
 					BoxBlurFilter op = new BoxBlurFilter();
+					System.out.println(image.getRGB(499, 0));
 					imageProcessed = op.filter(image, imageProcessed);
 					repaint();
 				}

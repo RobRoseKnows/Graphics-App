@@ -17,11 +17,11 @@ public class BoxBlurFilter extends DefaultImageOp {
 
         int[] inPixels = new int[width*height];
         int[] outPixels = new int[width*height];
-        getRGB(src, 0, 0, width, height, inPixels);
+        inPixels = getRGB(src, 0, 0, width, height, inPixels);
         blur(inPixels, outPixels, width, height, horizontalRadius);
         blur(outPixels, inPixels, height, width, verticalRadius);
-
-        setRGB(dest, 0, 0, width, height, inPixels);
+       
+        dest = setRGB(dest, width, height, outPixels);
 		return dest;
 	}
 	
